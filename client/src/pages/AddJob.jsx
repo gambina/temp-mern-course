@@ -6,17 +6,20 @@ import { Form, redirect } from "react-router-dom";
 import customFetch from "../utils/customFetch";
 import { FormRowSelect, SubmitBtn } from "../components";
 
-export const action = async ({ request }) => {
-  const formData = await request.formData();
-  const data = Object.fromEntries(formData);
+export const action =
+  (queryClient) =>
+  async ({ request }) => {
+    const formData = await request.formData();
+    const data = Object.fromEntries(formData);
 
-  try {
-    await customFetch.post("/jobs", data);
-    return redirect("all-jobs");
-  } catch (error) {
-    return error;
-  }
-};
+    try {
+      await customFetch.post("/jobs", data);
+      queryClient.invalidateQueries(["jobs"]);
+      return redirect("all-jobs");
+    } catch (error) {
+      return error;
+    }
+  };
 
 const AddJob = () => {
   const { user } = useOutletContext(); //dashboardlayout'da outlete koydugumuz sey bu

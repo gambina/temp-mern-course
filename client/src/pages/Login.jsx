@@ -6,16 +6,19 @@ import { Logo, FormRow, SubmitBtn } from "../components";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
 
-export const action = async ({ request }) => {
-  const formData = await request.formData();
-  const data = Object.fromEntries(formData);
-  try {
-    await customFetch.post("/auth/login", data);
-    return redirect("/dashboard");
-  } catch (error) {
-    return error;
-  }
-};
+export const action =
+  (queryClient) =>
+  async ({ request }) => {
+    const formData = await request.formData();
+    const data = Object.fromEntries(formData);
+    try {
+      await customFetch.post("/auth/login", data);
+      queryClient.invalidateQueries();
+      return redirect("/dashboard");
+    } catch (error) {
+      return error;
+    }
+  };
 
 const Login = () => {
   const navigate = useNavigate();
